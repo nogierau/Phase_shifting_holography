@@ -1,16 +1,17 @@
-# This is a sample Python script.
+from structures import Stack, Map, Hologram, BinaryMap
+from shape_presets import Box, Ones, Sphere
+import numpy as np
 
-# Press Maj+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# TODO image scales
+# TODO extrusion for binary shapes
+# TODO data visualization for 2D and 3D, real and complex
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    a = Box(shape=(4,5,6), region=[(1,3), (1,4), (1,5)])
+
+    b = Sphere(shape=(10,10), center=(0,0), radii=(10,10))
+
+    s = Stack(slices=[a, b])
+    print(s[1].values)
