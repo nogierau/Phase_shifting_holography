@@ -1,5 +1,6 @@
 import numpy as np
 from structures import BinaryMap
+from typing import Union
 
 
 class Ones(BinaryMap):
@@ -12,7 +13,7 @@ class Ones(BinaryMap):
 class Box(BinaryMap):
     """Binary n-dimensional Map() sub-instance containing ones inside a specified rectangle-like region"""
 
-    def __init__(self, shape:tuple, region:list[tuple]): # region = [(start,end), (start,end)...]
+    def __init__(self, shape:Union[tuple, int], region:list[tuple]): # region = [(start,end), (start,end)...]
         values = np.zeros(shape, dtype=int)
         values[*[slice(
             region[dim][0],
