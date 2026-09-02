@@ -24,48 +24,95 @@ class BinaryMap(Map):
         super().__init__(*args, **kwargs)
 
     def project_on(self, axis:int) -> Map:
-        """Orthonormal projection along a specified axis"""
-        return Map(values=np.sum(self.values, axis=axis))
+        """Performs an orthonormal projection of <self.values> along a specified <axis>"""
+
+        return Map(
+            values=np.sum(
+                self.values,
+                axis=axis
+            )
+        )
 
     def extend_to(self, new_shape:tuple, axis:Union[tuple, int]) -> Self:
-        """Generates a higher-dimensional BinaryMap() instance containing copies of self.values
-        along the specified axes"""
-        assert np.all(np.take(new_shape, axis) == np.asarray(self.shape))
+        """Generates a higher-dimensional BinaryMap() instance containing copies of <self.values>
+        repeated along the specified <axis>"""
 
-        new_values = np.zeros(shape=new_shape, dtype=int)
+        # Assert that the provided shapes of <axis> and <self.values> match
+        assert np.all(
+            np.take(new_shape, axis) == np.asarray(self.shape)
+        )
 
+        # New empty data structure
+        new_values = np.zeros(
+            shape=new_shape,
+            dtype=int
+        )
+
+        # Broadcasting and repeating <self.values> along the specified <axis> of <new_values>
         for pos, _ in np.ndenumerate(new_values):
-            new_values[pos] = self[tuple(np.asfortranarray(np.take(pos, axis)))]
+            new_values[pos] = self[
+                tuple(
+                    np.asfortranarray( # Catch the case where type(axis) == int
+                        np.take(pos, axis)
+                    )
+                )
+            ]
 
         return BinaryMap(values=new_values)
 
-    def union(self, other:Self) -> Self:
-        """Element-wise binary OR operator"""
-        return BinaryMap(values=np.clip(self.values + other.values, 0, 1))
+    @staticmethod
+    def or_(*args:Map) -> Map: # Type hinting at <Self> class inside a @staticmethod is not supported
+        """Performs an element-wise binary OR operation on all <arg.values> at once"""
 
-    def intersection(self, other:Self) -> Self:
-        """Element-wise binary AND operator"""
-        return BinaryMap(values=self.values * other.values)
-
-    def extrude(self, other:Self) -> Self:
-        """"""
-        new_shape = tuple(np.concatenate([self.shape, other.shape]))
-
-        return BinaryMap.intersection(
-            self.extend_to(new_shape=new_shape, axis=tuple(range(0, self.ndim))),
-            other.extend_to(new_shape=new_shape, axis=tuple(range(self.ndim, self.ndim + other.ndim)))
+        return BinaryMap(
+            values=np.clip(
+                np.sum(
+                    np.array([arg.values for arg in args]),
+                    axis=0
+                ),
+                a_min=0,
+                a_max=1
+            )
         )
 
     @staticmethod
-    def extrude_(*args): # TODO Does not work
+    def and_(*args:Map) -> Map: # Type hinting at <Self> class inside a @staticmethod is not supported
+        """Performs an element-wise binary AND operation on all <arg.values> at once"""
+
         return BinaryMap(
-            values=np.multiply(
-                *np.meshgrid(
-                    *[arg.values for arg in args],
-                    indexing='ij'
-                )
+            values=np.prod(
+                np.array([arg.values for arg in args]),
+                axis=0
             )
         )
+
+    @staticmethod
+    def extrude_(*args:Map) -> Map:
+        """Performs an extrusion of all <arg.values> along each other at once,
+        by computing every product combination."""
+
+        # Adding every <arg.shape> in a single tuple
+        new_shape = tuple(
+            np.concatenate(
+                [arg.shape for arg in args],
+                axis=0
+            )
+        )
+
+        # Cumulative dimension indexes to keep track of which axis belong to which <arg.values>
+        cumul_dim_id = np.cumsum([0] + [arg.ndim for arg in args])
+
+        # List of BinaryMap() instances all extended to the same <new_shape> shape,
+        # along their respective axis
+        extended_maps_list = [
+            arg.extend_to(
+                new_shape=new_shape,
+                axis=tuple(range(cumul_dim_id[i], cumul_dim_id[i+1])) # Each BinaryMap() has its own axes
+            ) for i, arg in enumerate(args)
+        ]
+
+        # Element-wise AND operation along all extended maps
+        return BinaryMap.and_(*extended_maps_list)
 
 
 class Hologram(Map):
@@ -77,7 +124,7 @@ class Hologram(Map):
         self.initial_phase = None
         self.q_vector = None
 
-    def read_initial_phase(self) -> float:
+    def read_initial_phase(self) -> float: # TODO
         pass
 
 

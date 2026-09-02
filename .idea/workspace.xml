@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="99237e49-dd6f-4de3-978e-33f3151a65f1" name="Changes" comment="Minor typehint fix">
+    <list default="true" id="99237e49-dd6f-4de3-978e-33f3151a65f1" name="Changes" comment="BinaryMap 2-element routines + minor typehints">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plotting_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting_tools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shape_presets.py" beforeDir="false" afterPath="$PROJECT_DIR$/shape_presets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/structures.py" beforeDir="false" afterPath="$PROJECT_DIR$/structures.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +108,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788298831282</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="BinaryMap 2-element routines + minor typehints">
+      <option name="closed" value="true" />
+      <created>1788369720146</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1788369720146</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -121,6 +127,7 @@
     <MESSAGE value="Data structure and some early generation presets" />
     <MESSAGE value="Simple plotting tools" />
     <MESSAGE value="Minor typehint fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Minor typehint fix" />
+    <MESSAGE value="BinaryMap 2-element routines + minor typehints" />
+    <option name="LAST_COMMIT_MESSAGE" value="BinaryMap 2-element routines + minor typehints" />
   </component>
 </project>
