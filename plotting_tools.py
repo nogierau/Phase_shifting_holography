@@ -16,10 +16,12 @@ class Image2D(Image):
     def show(el:Map):
         """Generates a view of a 2D Map() instance.
         In case of complex values, the imaginary part is discarded."""
-        if el.values.ndim == 2:
-            plt.imshow(el.values.real.transpose())
-            plt.colorbar()
-            plt.show()
+
+        assert el.ndim == 2
+
+        plt.imshow(el.real.transpose())
+        plt.colorbar()
+        plt.show()
 
 
 class Image3D(Image):

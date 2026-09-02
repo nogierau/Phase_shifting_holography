@@ -1,17 +1,25 @@
 from structures import Stack, Map, Hologram, BinaryMap
 from shape_presets import Box, Ones, Sphere
+from plotting_tools import Image2D
 import numpy as np
 
 # TODO image scales
 # TODO extrusion for binary shapes
-# TODO data visualization for 2D and 3D, real and complex
+# TODO data visualization for 3D maps
+# TODO data visualization for complex values
+# TODO image plotting : make wrapper instead of parent class
 
 
 if __name__ == '__main__':
 
-    a = Box(shape=(4,5,6), region=[(1,3), (1,4), (1,5)])
+    a = BinaryMap(values=np.array([1,1,1,1,0,0,0,0]))
+    b = BinaryMap(values=np.array([1,1,0,0,1,1,0,0]))
+    c = BinaryMap(values=np.array([1,0,1,0,1,0,1,0]))
 
-    b = Sphere(shape=(10,10), center=(0,0), radii=(10,10))
+    k = BinaryMap(values=np.array([[0,1,1], [1,0,1]]))
 
-    s = Stack(slices=[a, b])
-    print(s[1].values)
+    x = b.extend_to(new_shape=(2, 3, 8), axis=2)
+
+    y = BinaryMap.extrude(k, a)
+    print(y.values)
+

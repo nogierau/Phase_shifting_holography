@@ -6,8 +6,8 @@ from typing import Union
 class Ones(BinaryMap):
     """Binary n-dimensional Map() sub-instance containing ones everywhere"""
 
-    def __init__(self, shape:tuple):
-        super().__init__(np.ones(shape, dtype=int))
+    def __init__(self, shape:Union[int, tuple], *args, **kwargs):
+        super().__init__(values=np.ones(shape=shape, dtype=int), *args, **kwargs)
 
 
 class Box(BinaryMap):
@@ -19,7 +19,7 @@ class Box(BinaryMap):
             region[dim][0],
             region[dim][1]
         ) for dim in range(values.ndim)]] = 1
-        super().__init__(values)
+        super().__init__(values=values)
 
 class Sphere(BinaryMap):
     """Binary n-dimensional Map() sub-instance containing ones inside a specified spheroïdal region"""
