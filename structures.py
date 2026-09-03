@@ -1,5 +1,6 @@
 import numpy as np
 from typing import Self, Union
+from utils import keep_relevant_class
 
 
 class Map:
@@ -15,15 +16,7 @@ class Map:
     def __getattr__(self, item):
         return self.values.__getattribute__(item)
 
-
-class BinaryMap(Map):
-    """Generic n-dimensional Map() sub-instance with binary values,
-    representing a n-dimensional volume"""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def project_on(self, axis:int) -> Map:
+    def project_on(self, axis:int) -> Self:
         """Performs an orthonormal projection of <self.values> along a specified <axis>"""
 
         return Map(
@@ -33,8 +26,9 @@ class BinaryMap(Map):
             )
         )
 
-    def extend_to(self, new_shape:tuple, axis:Union[tuple, int]) -> Self:
-        """Generates a higher-dimensional BinaryMap() instance containing repeated copies
+    @keep_relevant_class
+    def extend_to(self, new_shape:tuple, axis:Union[tuple, int], cls:type=None) -> Self:
+        """Generates a higher-dimensional Map() instance containing repeated copies
         of <self.values> broadcasted on the specified <axis>"""
 
         # Assert that the provided shapes of <axis> and <self.values> match
@@ -48,7 +42,7 @@ class BinaryMap(Map):
             dtype=int
         )
 
-        # Broadcasting <self.values> onto <new.values> along the specified <axis>
+        # Broadcasting <self.values> onto <new_values> along the specified <axis>
         for pos, _ in np.ndenumerate(new_values):
             new_values[pos] = self[
                 tuple(
@@ -58,7 +52,32 @@ class BinaryMap(Map):
                 )
             ]
 
-        return BinaryMap(values=new_values)
+        return cls(values=new_values)
+
+    @keep_relevant_class
+    def zero_padding(self, border_width:int, cls:type=None) -> Self:
+        """Generates a larger Map() instance containing <self.values> in a central region
+        bordered by a belt of zeros in every dimension"""
+
+        # New empty data structure
+        new_values = np.zeros(
+            shape=tuple(np.asarray(self.shape) + 2 * border_width),
+            dtype=self.dtype
+        )
+
+        # Broadcasting <self.values> onto the central regin of <new_values>
+        for pos, val in np.ndenumerate(self.values):
+            new_values[tuple(np.asarray(pos) + border_width)] = val
+
+        return cls(values=new_values)
+
+
+class BinaryMap(Map):
+    """Generic n-dimensional Map() sub-instance with binary values,
+    representing a n-dimensional volume"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @staticmethod
     def or_(*args:Map) -> Map: # <Self> class type hinting inside a @staticmethod is not supported
