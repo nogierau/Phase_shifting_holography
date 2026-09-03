@@ -3,12 +3,11 @@ from typing import Self, Union
 from utils import keep_relevant_class
 
 
-class Map:
-    """Generic n-dimensional array-like object"""
+class Grid:
+    """Generic parent class for n-dimensional array-like objects"""
 
-    def __init__(self, values:np.ndarray=0, scale:float=1.):
+    def __init__(self, values:np.ndarray=0):
         self.values = np.asarray(values)
-        self.scale = scale
 
     def __getitem__(self, item):
         return self.values[item]
@@ -19,16 +18,16 @@ class Map:
     def project_on(self, axis:int) -> Self:
         """Performs an orthonormal projection of <self.values> along a specified <axis>"""
 
-        return Map(
+        return Grid(
             values=np.sum(
                 self.values,
                 axis=axis
             )
         )
 
-    @keep_relevant_class
-    def extend_to(self, new_shape:tuple, axis:Union[tuple, int], cls:type=None) -> Self:
-        """Generates a higher-dimensional Map() instance containing repeated copies
+    # @keep_relevant_class
+    def extend_to(self, new_shape:tuple, axis:Union[tuple, int], cls:type=None) -> Self: # TODO compatibility with vector-valued Grid()
+        """Generates a higher-dimensional Grid() instance containing repeated copies
         of <self.values> broadcasted on the specified <axis>"""
 
         # Assert that the provided shapes of <axis> and <self.values> match
@@ -52,11 +51,12 @@ class Map:
                 )
             ]
 
-        return cls(values=new_values)
+        # return cls(values=new_values)
+        return Grid(values=new_values)
 
-    @keep_relevant_class
-    def zero_padding(self, border_width:int, cls:type=None) -> Self:
-        """Generates a larger Map() instance containing <self.values> in a central region
+    # @keep_relevant_class
+    def zero_padding(self, border_width:int, cls:type=None) -> Self: # TODO compatibility with vector-valued Grid()
+        """Generates a larger Grid() instance containing <self.values> in a central region
         bordered by a belt of zeros in every dimension"""
 
         # New empty data structure
@@ -69,21 +69,21 @@ class Map:
         for pos, val in np.ndenumerate(self.values):
             new_values[tuple(np.asarray(pos) + border_width)] = val
 
-        return cls(values=new_values)
+        # return cls(values=new_values)
+        return Grid(values=new_values)
 
 
-class BinaryMap(Map):
-    """Generic n-dimensional Map() sub-instance with binary values,
-    representing a n-dimensional volume"""
+class BinaryGrid(Grid):
+    """Generic child class for Grid() sub-instances containing binary (boolean) values"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     @staticmethod
-    def or_(*args:Map) -> Map: # <Self> class type hinting inside a @staticmethod is not supported
+    def or_(*args:Grid) -> Grid: # <Self> class type hinting inside a @staticmethod is not supported
         """Performs an element-wise binary OR operation on all <arg.values> at once"""
 
-        return BinaryMap(
+        return BinaryGrid(
             values=np.clip(
                 np.sum(
                     np.array([arg.values for arg in args]),
@@ -95,10 +95,10 @@ class BinaryMap(Map):
         )
 
     @staticmethod
-    def and_(*args:Map) -> Map: # <Self> class type hinting inside a @staticmethod is not supported
+    def and_(*args:Grid) -> Grid: # <Self> class type hinting inside a @staticmethod is not supported
         """Performs an element-wise binary AND operation on all <arg.values> at once"""
 
-        return BinaryMap(
+        return BinaryGrid(
             values=np.prod(
                 np.array([arg.values for arg in args]),
                 axis=0
@@ -106,7 +106,7 @@ class BinaryMap(Map):
         )
 
     @staticmethod
-    def extrude_(*args:Map) -> Map:
+    def extrude_(*args:Grid) -> Grid:
         """Performs an extrusion of all <arg.values> along each other at once,
         by computing every product combination."""
 
@@ -121,7 +121,7 @@ class BinaryMap(Map):
         # Cumulative dimension indexes to keep track of which <axis> belong to which <arg.values>
         cumul_dim_id = np.cumsum([0] + [arg.ndim for arg in args])
 
-        # List of BinaryMap() instances all extended to the same <new_shape> along their respective <axis>
+        # List of BinaryGrid() instances all extended to the same <new_shape> along their respective <axis>
         extended_maps_list = [
             arg.extend_to(
                 new_shape=new_shape,
@@ -129,12 +129,20 @@ class BinaryMap(Map):
             ) for i, arg in enumerate(args)
         ]
 
-        # Element-wise AND operation between all extended BinaryMap() instances
-        return BinaryMap.and_(*extended_maps_list)
+        # Element-wise AND operation between all extended BinaryGrid() instances
+        return BinaryGrid.and_(*extended_maps_list)
+
+
+class Map(Grid):
+    """Generic child class for Grid() sub-instances associated with real-space positions"""
+
+    def __init__(self, scale:float=1., *args, **kwargs):
+        self.scale = scale
+        super().__init__(*args, **kwargs)
 
 
 class Hologram(Map):
-    """Generic 2-dimensional Map() sub-instance with real positive values,
+    """Generic class for 2-dimensional Map() sub-instance with real positive values,
     representing a hologram"""
 
     def __init__(self, *args, **kwargs):
@@ -149,7 +157,7 @@ class Hologram(Map):
 class Stack:
     """Generic 1-dimensional set of Map() instances"""
 
-    def __init__(self, slices:list[Map]):
+    def __init__(self, slices:list[Grid]):
         self.slices = slices
 
     def __getitem__(self, item):

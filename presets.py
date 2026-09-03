@@ -1,11 +1,12 @@
-from structures import Map, BinaryMap
+from base_structure import Grid, BinaryGrid
+from volumes import Ellipsoid
 
-class Cylinder(BinaryMap):
+class Cylinder(Grid):
     pass
 
-class ApodizedSquare(Map):
+class ApodizedSquare(Grid):
     pass
 
-class CustomFunctionMap(Map):
+class CustomFunctionMap(Grid):
     pass
 

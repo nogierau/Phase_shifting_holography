@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from typing import override
-from structures import Map
+from base_structure import Grid
 
 class Image:
 
@@ -13,7 +13,7 @@ class RealImage2D(Image):
 
     @staticmethod
     @override
-    def show(el:Map):
+    def show(el:Grid):
         """Generates a view of a 2D Map() instance.
         In case of complex values, the imaginary part is discarded."""
 
@@ -28,5 +28,5 @@ class RealImage3D(Image):
 
     @staticmethod
     @override
-    def show(el: Map):
+    def show(el: Grid):
         pass
