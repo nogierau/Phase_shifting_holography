@@ -1,5 +1,5 @@
 from structures import Stack, Map, Hologram, BinaryMap
-from shape_presets import Box, Ones, Sphere
+from presets import Box, Ones, Sphere
 from plotting_tools import Image2D
 import numpy as np
 

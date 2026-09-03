@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Self, Union, Optional, Any
+from typing import Self, Union
 
 
 class Map:
@@ -18,7 +18,7 @@ class Map:
 
 class BinaryMap(Map):
     """Generic n-dimensional Map() sub-instance with binary values,
-    representing a solid shape in n dimensions"""
+    representing a n-dimensional volume"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -34,8 +34,8 @@ class BinaryMap(Map):
         )
 
     def extend_to(self, new_shape:tuple, axis:Union[tuple, int]) -> Self:
-        """Generates a higher-dimensional BinaryMap() instance containing copies of <self.values>
-        repeated along the specified <axis>"""
+        """Generates a higher-dimensional BinaryMap() instance containing repeated copies
+        of <self.values> broadcasted on the specified <axis>"""
 
         # Assert that the provided shapes of <axis> and <self.values> match
         assert np.all(
@@ -48,7 +48,7 @@ class BinaryMap(Map):
             dtype=int
         )
 
-        # Broadcasting and repeating <self.values> along the specified <axis> of <new_values>
+        # Broadcasting <self.values> onto <new.values> along the specified <axis>
         for pos, _ in np.ndenumerate(new_values):
             new_values[pos] = self[
                 tuple(
@@ -61,7 +61,7 @@ class BinaryMap(Map):
         return BinaryMap(values=new_values)
 
     @staticmethod
-    def or_(*args:Map) -> Map: # Type hinting at <Self> class inside a @staticmethod is not supported
+    def or_(*args:Map) -> Map: # <Self> class type hinting inside a @staticmethod is not supported
         """Performs an element-wise binary OR operation on all <arg.values> at once"""
 
         return BinaryMap(
@@ -76,7 +76,7 @@ class BinaryMap(Map):
         )
 
     @staticmethod
-    def and_(*args:Map) -> Map: # Type hinting at <Self> class inside a @staticmethod is not supported
+    def and_(*args:Map) -> Map: # <Self> class type hinting inside a @staticmethod is not supported
         """Performs an element-wise binary AND operation on all <arg.values> at once"""
 
         return BinaryMap(
@@ -99,19 +99,18 @@ class BinaryMap(Map):
             )
         )
 
-        # Cumulative dimension indexes to keep track of which axis belong to which <arg.values>
+        # Cumulative dimension indexes to keep track of which <axis> belong to which <arg.values>
         cumul_dim_id = np.cumsum([0] + [arg.ndim for arg in args])
 
-        # List of BinaryMap() instances all extended to the same <new_shape> shape,
-        # along their respective axis
+        # List of BinaryMap() instances all extended to the same <new_shape> along their respective <axis>
         extended_maps_list = [
             arg.extend_to(
                 new_shape=new_shape,
-                axis=tuple(range(cumul_dim_id[i], cumul_dim_id[i+1])) # Each BinaryMap() has its own axes
+                axis=tuple(range(cumul_dim_id[i], cumul_dim_id[i+1]))
             ) for i, arg in enumerate(args)
         ]
 
-        # Element-wise AND operation along all extended maps
+        # Element-wise AND operation between all extended BinaryMap() instances
         return BinaryMap.and_(*extended_maps_list)
 
 
