@@ -21,9 +21,13 @@ class Box(BinaryGrid):
     """BinaryMap() sub-instance containing ones inside a specified rectangle-like region"""
 
     def __init__(self, shape:Union[tuple, int], region:list[tuple]):
-        """Generates a n-dimensional BinaryMap() sub-instance containing ones inside the specified <region>.
+        """Generates a BinaryMap() sub-instance containing ones inside the specified <region>.
 
-        :param region: list containing [(start, end), (start, end) ...] index boundaries for each dimension"""
+        :param shape: tuple or int
+            The shape of the numpy array containing values
+        :param region: list
+            Contains the index boundaries for each dimension.
+            syntax : region = [(start, end), (start, end) ...]"""
 
         # Empty data structure
         values = np.zeros(
@@ -44,7 +48,7 @@ class Ellipsoid(BinaryGrid):
     """BinaryMap() sub-instance containing ones inside a specified spheroïdal region"""
 
     def __init__(self, shape:tuple, center:tuple, radii:tuple):
-        """Generates a n-dimensional BinaryMap() sub-instance containing ones around a specified
+        """Generates a BinaryMap() sub-instance containing ones around a specified
         index <center> up to the specified index Euclidean <radii> for each dimension"""
 
         # Empty data structure

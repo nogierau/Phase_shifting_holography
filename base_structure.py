@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Self, Union
+from typing import Self, Union, Callable
 from utils import keep_relevant_class
 
 
@@ -139,6 +139,37 @@ class Map(Grid):
     def __init__(self, scale:float=1., *args, **kwargs):
         self.scale = scale
         super().__init__(*args, **kwargs)
+
+
+class Generator(Map):
+    """Generic child class for Map() sub-instances that evaluate a function on a given support"""
+
+    def __init__(self, func:Callable, volume:BinaryGrid, fallback:Callable=lambda _:0, dtype:type=None, *args, **kwargs): # TODO add apodization width and function
+        """Generates a Map() sub-instance containing evaluations of <func()> wherever <volume.values> is one,
+        and <fallback()> everywhere else.
+
+        :param func: Callable
+            Function taking a tuple of position indexes as an input.
+            The main function to evaluate.
+        :param fallback: Callable, optional
+            Function taking a tuple of position indexes as an input.
+            The fallback function.
+        :param volume: BinaryGrid
+            Support for the evaluation of func().
+        :param dtype: type, optional
+            The output type of both func() and fallback()."""
+
+        # Empty data structure
+        values = np.zeros(
+            shape=volume.shape,
+            dtype=dtype
+        )
+
+        # Calling func() wherever <vol.values> is one and fallback() everywhere else
+        for pos, val in np.ndenumerate(volume.values):
+            values[pos] = func(pos) if val else fallback(pos)
+
+        super().__init__(values=values, *args, **kwargs)
 
 
 class Hologram(Map):

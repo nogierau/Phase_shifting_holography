@@ -1,4 +1,4 @@
-from base_structure import Stack, Grid, Hologram, BinaryGrid
+from base_structure import Stack, Grid, Hologram, BinaryGrid, Generator
 from volumes import Zeros, Ones, Box, Ellipsoid
 from visuals import RealImage2D
 import numpy as np
@@ -14,9 +14,15 @@ import numpy as np
 
 if __name__ == '__main__':
 
-    a = Grid(values=np.array([(1,2), (4,5), (7,8)]))
+    f = lambda x:np.sum(x)
+    g = lambda y:-np.sum(y)
 
-    print(a.values)
-    b = a.zero_padding(border_width=2)
+    # vol = Box(shape=(100, 100), region=[(10,-10), (20,-20)])
+    vol = Ellipsoid(shape=(100,100), center=(80,5), radii=(30, 65))
+    print(vol.values)
 
-    print(b.values)
+    a = Generator(func=f, volume=vol, fallback=g, dtype=int)
+
+    b = a.zero_padding(border_width=15)
+
+    RealImage2D.show(b)
