@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="99237e49-dd6f-4de3-978e-33f3151a65f1" name="Changes" comment="BinaryMap vectorized routines">
+    <list default="true" id="99237e49-dd6f-4de3-978e-33f3151a65f1" name="Changes" comment="BinaryMap comments and docstrings">
+      <change afterPath="$PROJECT_DIR$/volumes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shape_presets.py" beforeDir="false" afterPath="$PROJECT_DIR$/presets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/structures.py" beforeDir="false" afterPath="$PROJECT_DIR$/structures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotting_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotting_tools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presets.py" beforeDir="false" afterPath="$PROJECT_DIR$/presets.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +126,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788384929024</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="BinaryMap comments and docstrings">
+      <option name="closed" value="true" />
+      <created>1788429508953</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1788429508953</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -138,6 +147,7 @@
     <MESSAGE value="Minor typehint fix" />
     <MESSAGE value="BinaryMap 2-element routines + minor typehints" />
     <MESSAGE value="BinaryMap vectorized routines" />
-    <option name="LAST_COMMIT_MESSAGE" value="BinaryMap vectorized routines" />
+    <MESSAGE value="BinaryMap comments and docstrings" />
+    <option name="LAST_COMMIT_MESSAGE" value="BinaryMap comments and docstrings" />
   </component>
 </project>

@@ -9,7 +9,7 @@ class Image:
         pass
 
 
-class Image2D(Image):
+class RealImage2D(Image):
 
     @staticmethod
     @override
@@ -24,7 +24,7 @@ class Image2D(Image):
         plt.show()
 
 
-class Image3D(Image):
+class RealImage3D(Image):
 
     @staticmethod
     @override
