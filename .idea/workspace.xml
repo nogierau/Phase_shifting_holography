@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="99237e49-dd6f-4de3-978e-33f3151a65f1" name="Changes" comment="Generator class">
-      <change afterPath="$PROJECT_DIR$/optics.py" afterDir="false" />
+    <list default="true" id="99237e49-dd6f-4de3-978e-33f3151a65f1" name="Changes" comment="Refactored BinaryGrid to Volume&#10;Refactored Generator to Template">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base_structure.py" beforeDir="false" afterPath="$PROJECT_DIR$/base_structure.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presets.py" beforeDir="false" afterPath="$PROJECT_DIR$/presets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/optics.py" beforeDir="false" afterPath="$PROJECT_DIR$/optics.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/volumes.py" beforeDir="false" afterPath="$PROJECT_DIR$/volumes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -168,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788464655949</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Refactored BinaryGrid to Volume&#10;Refactored Generator to Template">
+      <option name="closed" value="true" />
+      <created>1788554687104</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1788554687104</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -186,6 +191,7 @@
     <MESSAGE value="Relevant class decorator + minor classes rearrangements" />
     <MESSAGE value="Holdback on @keep_relevant_class + scale&#10;Some minor refactors" />
     <MESSAGE value="Generator class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Generator class" />
+    <MESSAGE value="Refactored BinaryGrid to Volume&#10;Refactored Generator to Template" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored BinaryGrid to Volume&#10;Refactored Generator to Template" />
   </component>
 </project>

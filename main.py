@@ -1,7 +1,7 @@
-from base_structure import Stack, Grid, Volume, Template
+from base_structure import Stack, Grid, Volume, Template, Map
 from volumes import Zeros, Ones, Box, Ellipsoid
 from visuals import RealImage2D
-from optics import SimpleHologram
+from optics import Wavefront
 import numpy as np
 
 # TODO image scales
@@ -16,14 +16,16 @@ import numpy as np
 if __name__ == '__main__':
 
     f = lambda x:np.pi
-    g = lambda y:0.8
-    h = lambda z:1.
+    g = lambda x:1.
 
-    square = Box(shape=(100,100), region=[(20,-20), (20,-20)])
+    v = Box(shape=(5,5), region=[(1,-1), (2,-2)])
 
-    phase = Template(func=f, volume=square)
-    amplitude = Template(func=g, volume=square, fallback=h)
+    p = Template(func=f, volume=v)
+    a = Template(func=g, volume=v, fallback=g)
 
-    print(phase.values)
+    w = Wavefront(amplitude=a, phase=p)
 
-    RealImage2D.show(amplitude)
+    print(w.shape)
+    print(w[2,2])
+    print(w.values)
+

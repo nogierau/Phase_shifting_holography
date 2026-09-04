@@ -4,24 +4,24 @@ from typing import Union
 
 
 class Zeros(Volume):
-    """BinaryMap() sub-instance containing zeros everywhere"""
+    """Volume() sub-instance containing zeros everywhere"""
 
     def __init__(self, shape: Union[tuple, int], *args, **kwargs):
         super().__init__(values=np.zeros(shape=shape, dtype=int), *args, **kwargs)
 
 
 class Ones(Volume):
-    """BinaryMap() sub-instance containing ones everywhere"""
+    """Volume() sub-instance containing ones everywhere"""
 
     def __init__(self, shape:Union[tuple, int], *args, **kwargs):
         super().__init__(values=np.ones(shape=shape, dtype=int), *args, **kwargs)
 
 
 class Box(Volume):
-    """BinaryMap() sub-instance containing ones inside a specified rectangle-like region"""
+    """Volume() sub-instance containing ones inside a specified rectangle-like region"""
 
     def __init__(self, shape:Union[tuple, int], region:list[tuple]):
-        """Generates a BinaryMap() sub-instance containing ones inside the specified <region>.
+        """Generates a Volume() sub-instance containing ones inside the specified <region>.
 
         :param shape: tuple or int
             The shape of the numpy array containing values
@@ -45,10 +45,10 @@ class Box(Volume):
 
 
 class Ellipsoid(Volume):
-    """BinaryMap() sub-instance containing ones inside a specified spheroïdal region"""
+    """Volume() sub-instance containing ones inside a specified spheroïdal region"""
 
     def __init__(self, shape:tuple, center:tuple, radii:tuple):
-        """Generates a BinaryMap() sub-instance containing ones around a specified
+        """Generates a Volume() sub-instance containing ones around a specified
         index <center> up to the specified index Euclidean <radii> for each dimension"""
 
         # Empty data structure
