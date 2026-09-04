@@ -1,12 +1,13 @@
-from base_structure import Grid, BinaryGrid
+from base_structure import Grid, Volume, Template
 from volumes import Ellipsoid
 
 class Cylinder(Grid):
     pass
 
-class ApodizedSquare(Grid):
+class ApodizedSquare(Template):
     pass
 
-class CustomFunctionMap(Grid):
+class Flower(Template):
     pass
 
+# And also for generating phase-shifted stacks...

@@ -65,7 +65,7 @@ class Grid:
             dtype=self.dtype
         )
 
-        # Broadcasting <self.values> onto the central regin of <new_values>
+        # Broadcasting <self.values> onto the central region of <new_values>
         for pos, val in np.ndenumerate(self.values):
             new_values[tuple(np.asarray(pos) + border_width)] = val
 
@@ -73,17 +73,17 @@ class Grid:
         return Grid(values=new_values)
 
 
-class BinaryGrid(Grid):
+class Volume(Grid):
     """Generic child class for Grid() sub-instances containing binary (boolean) values"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     @staticmethod
-    def or_(*args:Grid) -> Grid: # <Self> class type hinting inside a @staticmethod is not supported
+    def or_(*args): # <Self> class type hinting inside a @staticmethod is not supported
         """Performs an element-wise binary OR operation on all <arg.values> at once"""
 
-        return BinaryGrid(
+        return Volume(
             values=np.clip(
                 np.sum(
                     np.array([arg.values for arg in args]),
@@ -95,10 +95,10 @@ class BinaryGrid(Grid):
         )
 
     @staticmethod
-    def and_(*args:Grid) -> Grid: # <Self> class type hinting inside a @staticmethod is not supported
+    def and_(*args): # <Self> class type hinting inside a @staticmethod is not supported
         """Performs an element-wise binary AND operation on all <arg.values> at once"""
 
-        return BinaryGrid(
+        return Volume(
             values=np.prod(
                 np.array([arg.values for arg in args]),
                 axis=0
@@ -106,7 +106,7 @@ class BinaryGrid(Grid):
         )
 
     @staticmethod
-    def extrude_(*args:Grid) -> Grid:
+    def extrude_(*args): # <Self> class type hinting inside a @staticmethod is not supported
         """Performs an extrusion of all <arg.values> along each other at once,
         by computing every product combination."""
 
@@ -121,7 +121,7 @@ class BinaryGrid(Grid):
         # Cumulative dimension indexes to keep track of which <axis> belong to which <arg.values>
         cumul_dim_id = np.cumsum([0] + [arg.ndim for arg in args])
 
-        # List of BinaryGrid() instances all extended to the same <new_shape> along their respective <axis>
+        # List of Volume() instances all extended to the same <new_shape> along their respective <axis>
         extended_maps_list = [
             arg.extend_to(
                 new_shape=new_shape,
@@ -129,8 +129,8 @@ class BinaryGrid(Grid):
             ) for i, arg in enumerate(args)
         ]
 
-        # Element-wise AND operation between all extended BinaryGrid() instances
-        return BinaryGrid.and_(*extended_maps_list)
+        # Element-wise AND operation between all extended Volume() instances
+        return Volume.and_(*extended_maps_list)
 
 
 class Map(Grid):
@@ -141,10 +141,11 @@ class Map(Grid):
         super().__init__(*args, **kwargs)
 
 
-class Generator(Map):
+class Template(Map):
     """Generic child class for Map() sub-instances that evaluate a function on a given support"""
 
-    def __init__(self, func:Callable, volume:BinaryGrid, fallback:Callable=lambda _:0, dtype:type=None, *args, **kwargs): # TODO add apodization width and function
+    def __init__(self, func:Callable, volume:Volume, fallback:Callable=lambda _:0,
+                 dtype:type=None, *args, **kwargs): # TODO add apodization width and function
         """Generates a Map() sub-instance containing evaluations of <func()> wherever <volume.values> is one,
         and <fallback()> everywhere else.
 
@@ -154,7 +155,7 @@ class Generator(Map):
         :param fallback: Callable, optional
             Function taking a tuple of position indexes as an input.
             The fallback function.
-        :param volume: BinaryGrid
+        :param volume: Volume
             Support for the evaluation of func().
         :param dtype: type, optional
             The output type of both func() and fallback()."""
@@ -170,19 +171,6 @@ class Generator(Map):
             values[pos] = func(pos) if val else fallback(pos)
 
         super().__init__(values=values, *args, **kwargs)
-
-
-class Hologram(Map):
-    """Generic class for 2-dimensional Map() sub-instance with real positive values,
-    representing a hologram"""
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.initial_phase = None
-        self.q_vector = None
-
-    def read_initial_phase(self) -> float: # TODO
-        pass
 
 
 class Stack:

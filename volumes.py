@@ -1,23 +1,23 @@
 import numpy as np
-from base_structure import BinaryGrid
+from base_structure import Volume
 from typing import Union
 
 
-class Zeros(BinaryGrid):
+class Zeros(Volume):
     """BinaryMap() sub-instance containing zeros everywhere"""
 
     def __init__(self, shape: Union[tuple, int], *args, **kwargs):
         super().__init__(values=np.zeros(shape=shape, dtype=int), *args, **kwargs)
 
 
-class Ones(BinaryGrid):
+class Ones(Volume):
     """BinaryMap() sub-instance containing ones everywhere"""
 
     def __init__(self, shape:Union[tuple, int], *args, **kwargs):
         super().__init__(values=np.ones(shape=shape, dtype=int), *args, **kwargs)
 
 
-class Box(BinaryGrid):
+class Box(Volume):
     """BinaryMap() sub-instance containing ones inside a specified rectangle-like region"""
 
     def __init__(self, shape:Union[tuple, int], region:list[tuple]):
@@ -44,7 +44,7 @@ class Box(BinaryGrid):
         super().__init__(values=values)
 
 
-class Ellipsoid(BinaryGrid):
+class Ellipsoid(Volume):
     """BinaryMap() sub-instance containing ones inside a specified spheroïdal region"""
 
     def __init__(self, shape:tuple, center:tuple, radii:tuple):
