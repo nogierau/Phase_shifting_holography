@@ -15,7 +15,7 @@ def keep_relevant_class(func):
     return wrapper
 
 
-def distance_sq_norm(x:tuple, y:tuple, r:tuple=None):
+def distance_sq_norm(x: tuple, y: tuple, r: tuple = None):
     """Euclidean normalized squared distance between two set of index coordinates"""
 
     if r is None:

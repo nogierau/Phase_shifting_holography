@@ -13,28 +13,20 @@ import numpy as np
 # TODO reduce Volume() values to 1-bit size instead of full 64-bits (bool ?)
 # TODO proper separation of Grid() and Map() and the like with @keep_relevant_class
 # TODO Grid() compatibility with vectorial values
+# TODO image saving to .tif
 
 
 if __name__ == '__main__':
 
-    g = GradientTemplatePreset(shape=(100,100), q_vector=(4e-2, 3e-2))
-    a = FlatSquareTemplatePreset(shape=(100,100), width=50, value=.8, fallback_value=1.)
-    p = FlatSquareTemplatePreset(shape=(100,100), width=50, value=np.pi, fallback_value=0.)
+    a = Volume(values=np.array([1,1,1,1,0,0,0,0]))
+    b = Volume(values=np.array([1,1,0,0,1,1,0,0]))
+    c = Volume(values=np.array([1,0,1,0,1,0,1,0]))
 
-    w = Wavefront(amplitude=a, phase=p + g)
+    x = Volume.extrude_(a, b)
 
-    h = SimpleHologram(wavefront=w)
-    RealImage2D.show(h)
+    h = Template(func=lambda _:1j, volume=x, dtype=complex)
 
-
-    f = FlowerTemplatePreset(shape=(100,100), radius=50, angle=20.)
-    y = ConstantTemplatePreset(shape=(100,100), value=1.)
-    RealImage2D.show(f)
-
-    u = Wavefront(amplitude=y, phase=f + g)
-
-    i = SimpleHologram(wavefront=u)
-    RealImage2D.show(i)
+    print(h.values)
 
 
 

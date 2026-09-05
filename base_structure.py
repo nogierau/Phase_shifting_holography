@@ -1,12 +1,12 @@
 import numpy as np
-from typing import Self, Union, Callable
+from typing import Self, Callable
 from utils import keep_relevant_class
 
 
 class Grid:
     """Generic parent class for n-dimensional array-like objects"""
 
-    def __init__(self, values:np.ndarray=0):
+    def __init__(self, values: np.ndarray):
         self.values = np.asarray(values)
 
     def __getitem__(self, item):
@@ -15,7 +15,7 @@ class Grid:
     def __getattr__(self, item):
         return self.values.__getattribute__(item)
 
-    def project_on(self, axis:int) -> Self:
+    def project_on(self, axis: int) -> Self:
         """Performs an orthonormal projection of <self.values> along a specified <axis>"""
 
         return Grid(
@@ -26,7 +26,7 @@ class Grid:
         )
 
     # @keep_relevant_class
-    def extend_to(self, new_shape:tuple, axis:Union[tuple, int], cls:type=None) -> Self: # TODO compatibility with vector-valued Grid()
+    def extend_to(self, new_shape: tuple, axis: tuple | int, cls: type = None) -> Self: # TODO compatibility with vector-valued Grid()
         """Generates a higher-dimensional Grid() instance containing repeated copies
         of <self.values> broadcasted on the specified <axis>"""
 
@@ -38,7 +38,7 @@ class Grid:
         # New empty data structure
         new_values = np.zeros(
             shape=new_shape,
-            dtype=int
+            dtype=self.dtype
         )
 
         # Broadcasting <self.values> onto <new_values> along the specified <axis>
@@ -55,7 +55,7 @@ class Grid:
         return Grid(values=new_values)
 
     # @keep_relevant_class
-    def zero_padding(self, border_width:int, cls:type=None) -> Self: # TODO compatibility with vector-valued Grid()
+    def zero_padding(self, border_width: int, cls: type = None) -> Self: # TODO compatibility with vector-valued Grid()
         """Generates a larger Grid() instance containing <self.values> in a central region
         bordered by a belt of zeros in every dimension"""
 
@@ -76,22 +76,18 @@ class Grid:
 class Volume(Grid):
     """Generic child class for Grid() sub-instances containing binary (boolean) values"""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, values: np.ndarray):
+        super().__init__(values=values.astype(bool))
 
     @staticmethod
     def or_(*args): # <Self> class type hinting inside a @staticmethod is not supported
         """Performs an element-wise binary OR operation on all <arg.values> at once"""
 
         return Volume(
-            values=np.clip(
-                np.sum(
-                    np.array([arg.values for arg in args]),
-                    axis=0
-                ),
-                a_min=0,
-                a_max=1
-            )
+            values=np.sum(
+                np.array([arg.values for arg in args]),
+                axis=0
+            ).astype(bool)
         )
 
     @staticmethod
@@ -102,7 +98,7 @@ class Volume(Grid):
             values=np.prod(
                 np.array([arg.values for arg in args]),
                 axis=0
-            )
+            ).astype(bool)
         )
 
     @staticmethod
@@ -136,7 +132,7 @@ class Volume(Grid):
 class Map(Grid):
     """Generic child class for Grid() sub-instances associated with real-space positions"""
 
-    def __init__(self, scale:float=1., *args, **kwargs):
+    def __init__(self, scale: float = 1., *args, **kwargs):
         self.scale = scale
         super().__init__(*args, **kwargs)
 
@@ -147,8 +143,8 @@ class Map(Grid):
 class Template(Map):
     """Generic child class for Map() sub-instances that evaluate a function on a given support"""
 
-    def __init__(self, func:Callable, volume:Volume, fallback:Callable=lambda _:0,
-                 dtype:type=None, *args, **kwargs): # TODO add apodization width and function
+    def __init__(self, func: Callable, volume: Volume, fallback: Callable = lambda _: 0,
+                 dtype: type = None, *args, **kwargs): # TODO add apodization width and function
         """Generates a Map() sub-instance containing evaluations of <func()> wherever <volume.values> is one,
         and <fallback()> everywhere else.
 
@@ -179,7 +175,7 @@ class Template(Map):
 class Stack:
     """Generic 1-dimensional set of Map() instances"""
 
-    def __init__(self, slices:list[Grid]):
+    def __init__(self, slices: list[Grid]):
         self.slices = slices
 
     def __getitem__(self, item):

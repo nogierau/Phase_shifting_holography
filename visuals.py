@@ -13,7 +13,7 @@ class RealImage2D(Image):
 
     @staticmethod
     @override
-    def show(el:Grid):
+    def show(el: Grid):
         """Generates a view of a 2D Map() instance.
         In case of complex values, the imaginary part is discarded."""
 
