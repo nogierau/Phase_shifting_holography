@@ -1,7 +1,8 @@
 from base_structure import Stack, Grid, Volume, Template, Map
 from volumes import Zeros, Ones, Box, Ellipsoid
 from visuals import RealImage2D
-from optics import Wavefront
+from optics import Wavefront, SimpleHologram
+from presets import GradientTemplatePreset, ConstantTemplatePreset, FlatSquareTemplatePreset
 import numpy as np
 
 # TODO image scales
@@ -15,17 +16,20 @@ import numpy as np
 
 if __name__ == '__main__':
 
-    f = lambda x:np.pi
-    g = lambda x:1.
+    g = GradientTemplatePreset(shape=(100, 100), q_vector=(4e-2, 3e-2))
+    a = FlatSquareTemplatePreset(shape=(100,100), width=50, value=.8, fallback_value=1.)
+    p = FlatSquareTemplatePreset(shape=(100,100), width=50, value=np.pi, fallback_value=0.)
 
-    v = Box(shape=(5,5), region=[(1,-1), (2,-2)])
+    RealImage2D.show(p + g)
 
-    p = Template(func=f, volume=v)
-    a = Template(func=g, volume=v, fallback=g)
+    w = Wavefront(amplitude=a, phase=p + g)
 
-    w = Wavefront(amplitude=a, phase=p)
+    h = SimpleHologram(wavefront=w)
 
-    print(w.shape)
-    print(w[2,2])
-    print(w.values)
+    RealImage2D.show(h)
+
+
+
+
+
 

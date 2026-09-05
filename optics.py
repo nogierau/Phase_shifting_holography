@@ -12,8 +12,8 @@ class SimpleHologram(Map):
     """Generic class for 2-dimensional Map() sub-instance with real positive values,
     representing a hologram"""
 
-    def __init__(self, wavefront:Wavefront, q_vector:tuple, initial_phase:float=0.):
-        pass
+    def __init__(self, wavefront:Wavefront):
+        super().__init__(values=np.pow(np.abs(1 + wavefront.values), 2))
 
     def read_initial_phase(self) -> float: # TODO
         pass
