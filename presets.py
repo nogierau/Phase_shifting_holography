@@ -1,5 +1,6 @@
 from base_structure import Grid, Template
-from volumes import Ones, Box
+from volumes import Ones, Box, Ellipsoid
+from utils import distance_sq_norm
 import numpy as np
 
 
@@ -21,7 +22,7 @@ class GradientTemplatePreset(Template):
 
 class FlatSquareTemplatePreset(Template):
 
-    def __init__(self, shape:tuple, width:int, value:float, fallback_value:float=0., *args, **kwargs): # TODO inherit apodization from base_structure.Template
+    def __init__(self, shape:tuple, width:int, value:float|complex, fallback_value:float|complex=0., *args, **kwargs): # TODO inherit apodization from base_structure.Template
 
         # Centered square region
         volume = Box(shape=shape, region=[((l - width)//2, - (l - width)//2) for l in shape])
@@ -29,11 +30,32 @@ class FlatSquareTemplatePreset(Template):
         super().__init__(func=lambda _:value, volume=volume, fallback=lambda _:fallback_value, *args, **kwargs)
 
 
-class Cylinder(Grid):
-    pass
+class FlowerTemplatePreset(Template):
 
+    def __init__(self, shape:tuple, radius:int, angle:float, *args, **kwargs):
 
-class Flower(Template):
-    pass
+        # Image center coordinates
+        center = tuple(np.asarray(shape) // 2)
+
+        # Main function
+        def func(pos:tuple):
+
+            r = np.sqrt(distance_sq_norm(pos, center))
+
+            return (
+                    np.sin(
+                        np.pi * ((pos[0] - shape[0]/2) * np.cos(angle) - (pos[1] - shape[1]/2) * np.sin(angle)) / radius
+                    ) *
+                    np.sin(
+                        np.pi * ((pos[1] - shape[1]/2) * np.cos(angle) + (pos[0] - shape[0]/2) * np.sin(angle)) / radius
+                    ) *
+                    np.cos (np.pi / 2 * r/radius)
+            )
+
+        # Function support
+        volume = Ellipsoid(shape=shape, center=center, radii=tuple([radius] * len(shape)))
+
+        super().__init__(func=func, volume=volume, *args, **kwargs)
+
 
 # And also for generating phase-shifted stacks...

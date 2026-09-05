@@ -1,6 +1,7 @@
 import numpy as np
 from base_structure import Volume
 from typing import Union
+from utils import distance_sq_norm
 
 
 class Zeros(Volume):
@@ -57,18 +58,8 @@ class Ellipsoid(Volume):
             dtype=int
         )
 
-        # Computing the Euclidean distance between two points
-        def distance_sq_norm(x:tuple, y:tuple):
-            """Euclidean normalized squared distance between two set of index coordinates"""
-
-            return sum(
-                np.square(
-                    (x[dim] - y[dim]) / radii[dim]
-                ) for dim in range(values.ndim)
-            )
-
         # Filling the spheroïdal region with ones
         for pos, _ in np.ndenumerate(values):
-            values[pos] = 1 if distance_sq_norm(pos, center) < 1 else 0
+            values[pos] = 1 if distance_sq_norm(pos, center, radii) < 1 else 0
 
         super().__init__(values=values)
