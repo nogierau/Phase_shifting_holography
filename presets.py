@@ -5,13 +5,13 @@ from typing import Any
 import numpy as np
 
 
-class ConstantTemplatePreset(Template):
+class Constant(Template):
 
     def __init__(self, shape: tuple | int, value: Any, *args, **kwargs):
         super().__init__(func=lambda _: value, volume=Ones(shape=shape), *args, **kwargs)
 
 
-class GradientTemplatePreset(Template):
+class Gradient(Template):
 
     def __init__(self, shape: tuple | int, q_vector: tuple | int, *args, **kwargs):
 
@@ -21,7 +21,7 @@ class GradientTemplatePreset(Template):
         super().__init__(func=func, volume=Ones(shape=shape), *args, **kwargs)
 
 
-class FlatSquareTemplatePreset(Template):
+class FlatSquare(Template):
 
     def __init__(self, shape: tuple | int, width: int, value: Any,
                  fallback_value: Any = 0., *args, **kwargs): # TODO inherit apodization from base_structure.Template
@@ -32,7 +32,7 @@ class FlatSquareTemplatePreset(Template):
         super().__init__(func=lambda _: value, volume=volume, fallback=lambda _: fallback_value, *args, **kwargs)
 
 
-class FlowerTemplatePreset(Template):
+class Flower(Template):
 
     def __init__(self, shape: tuple | int, radius: int, angle: float, *args, **kwargs):
 

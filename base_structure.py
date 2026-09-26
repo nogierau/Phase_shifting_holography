@@ -15,6 +15,7 @@ class Grid:
     def __getattr__(self, item):
         return self.values.__getattribute__(item)
 
+    # @keep_relevant_class
     def project_on(self, axis: int) -> Self:
         """Performs an orthonormal projection of <self.values> along a specified <axis>"""
 
