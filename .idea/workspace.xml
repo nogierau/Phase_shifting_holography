@@ -4,11 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="99237e49-dd6f-4de3-978e-33f3151a65f1" name="Changes" comment="Volume dtype as bool">
+    <list default="true" id="99237e49-dd6f-4de3-978e-33f3151a65f1" name="Changes" comment="Added Digital Micrograph scripts folder">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/base_structure.py" beforeDir="false" afterPath="$PROJECT_DIR$/base_structure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/presets.py" beforeDir="false" afterPath="$PROJECT_DIR$/presets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DM scripts/Phase_shifting_DM.s" beforeDir="false" afterPath="$PROJECT_DIR$/Digital_Micrograph/Phase_shifting_DM.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DM scripts/Record_hologram_stack.s" beforeDir="false" afterPath="$PROJECT_DIR$/Digital_Micrograph/Record_hologram_stack.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/base_structure.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/base_structure.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/optics.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/optics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/presets.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/presets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visuals.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/visuals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/volumes.py" beforeDir="false" afterPath="$PROJECT_DIR$/Python/volumes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,9 +65,15 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/PycharmProjects/Phase_shifting_holography/DM scripts&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\User\PycharmProjects\Phase_shifting_holography\DM scripts" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -205,7 +217,15 @@
       <option name="project" value="LOCAL" />
       <updated>1788647669209</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Added Digital Micrograph scripts folder">
+      <option name="closed" value="true" />
+      <created>1790461263336</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1790461263336</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -227,6 +247,7 @@
     <MESSAGE value="Wavefront class" />
     <MESSAGE value="Some Template presets" />
     <MESSAGE value="Volume dtype as bool" />
-    <option name="LAST_COMMIT_MESSAGE" value="Volume dtype as bool" />
+    <MESSAGE value="Added Digital Micrograph scripts folder" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Digital Micrograph scripts folder" />
   </component>
 </project>
