@@ -11,8 +11,8 @@ to yield a phase map with reduced residual fringes compared to that of the stand
   
 > Output spatial resolution does not depend on fringe spacing.
 
-> However, the IPPS requires identical contrast and visibility profiles between holograms:
-  it is therefore necessary to ensure that the exposure conditions are rigorously constant throughout the entire acquisition.
+> However, IPPS requires identical contrast and visibility profiles between holograms:
+  it is therefore necessary to ensure that the exposure conditions remain rigorously constant throughout the entire acquisition.
 
 > The effects of sample drift can nevertheless be made negligible by using a small enough individual exposure time.
 
@@ -23,7 +23,7 @@ to yield a phase map with reduced residual fringes compared to that of the stand
 
 > A whole number of fringes shifted between the first and last holograms yields minimal errors and noise in the final phase map;
   however, the difference becomes insignificant beyond a total shift of 2 whole fringes,
-  such that precision on the exact phase shift amount is no longer required if the user goes for more.
+  such that precision on the exact phase shift amount is no longer required if the user chooses to go for more.
 
 > It is advised to run the script once in a vacuum region to ensure that these criteria are met before exposing the sample.
 

@@ -5,8 +5,7 @@ using the Iterative Parametric Phase Shift (IPPS) method to yield a phase map wi
 compared to that of the standard Phase Shift (PS).
 
 Additional details can be found at the following source :
-[Nogier, A. (2025). Microscopie électronique operando pour l'étude de mémoires magnétiques
-(Doctoral dissertation, Université Grenoble Alpes [2020-....]).]
+[Nogier, A. (2025). Microscopie electronique operando pour l'etude de memoires magnetiques (Doctoral dissertation, Universite Grenoble Alpes [2020-....]).]
 
 === Input ===
 
