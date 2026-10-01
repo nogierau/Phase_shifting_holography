@@ -140,6 +140,9 @@ class Map(Grid):
     def __add__(self, other):
         return Map(scale=self.scale, values=self.values + other.values)
 
+    def __sub__(self, other):
+        return Map(scale=self.scale, values=self.values - other.values)
+
 
 class Template(Map):
     """Generic child class for Map() sub-instances that evaluate a function on a given support"""

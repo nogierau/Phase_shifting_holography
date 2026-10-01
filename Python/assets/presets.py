@@ -13,10 +13,10 @@ class Constant(Template):
 
 class Gradient(Template):
 
-    def __init__(self, shape: tuple | int, q_vector: tuple | int, *args, **kwargs):
+    def __init__(self, shape: tuple | int, slope: tuple | int, *args, **kwargs):
 
         # Linear function such that func(0,...,0) = 0
-        func = lambda pos: 2 * np.pi * np.dot(pos, q_vector)
+        func = lambda pos: 2 * np.pi * np.dot(pos, slope)
 
         super().__init__(func=func, volume=Ones(shape=shape), *args, **kwargs)
 

@@ -1,5 +1,5 @@
-from Python.assets.visuals import RealImage2D
-from Python.assets.presets import FlatSquare, Flower
+from visuals import RealImage2D
+from presets import FlatSquare, Flower
 
 # TODO apodization
 # TODO convert np.ndarray to scipy.ndimage
