@@ -1,9 +1,5 @@
-from base_structure import Stack, Grid, Volume, Template, Map
-from volumes import Zeros, Ones, Box, Ellipsoid
-from visuals import RealImage2D
-from optics import Wavefront, SimpleHologram
-from presets import Gradient, Constant, FlatSquare, Flower
-import numpy as np
+from Python.assets.visuals import RealImage2D
+from Python.assets.presets import FlatSquare, Flower
 
 # TODO apodization
 # TODO convert np.ndarray to scipy.ndimage
