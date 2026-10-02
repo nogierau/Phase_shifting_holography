@@ -82,6 +82,11 @@ image wrap(image img)
 	return (img - min(img)) % (2*Pi()) - Pi()
 }
 
+// Function for computing the dot product of two 1D images
+	number dot(image a, image b)
+	{
+		return sum(a * b)
+	}
 
 
 // ===================================================
@@ -96,8 +101,8 @@ image wrap(image img)
 	number m = hologram_stack.ImageGetDimensionSize(2)		// Number of hologram slices
 
 	// Verbose
-	Result("\n\n=== Iterative Parametric Phase Shifting ===")
-	Result("\nStack size : (" + Nx + " ; " + Ny + " ; " + m + ")")
+	Result("\n=== Iterative Parametric Phase Shifting ===\n")
+	Result("Stack size : (" + Nx + " ; " + Ny + " ; " + m + ")\n")
 
 
 // === User input ===
@@ -125,7 +130,7 @@ image wrap(image img)
 			right = min(right, Nx)
 			
 			// Verbose
-			Result( "\nROI : [" + left + ", " + top + ", " + right + ", " + bottom + "]" )
+			Result( "ROI : [" + left + ", " + top + ", " + right + ", " + bottom + "]\n" )
 		}
 		else
 		{
@@ -147,8 +152,12 @@ image wrap(image img)
 
 // === Rough guess for initial phase values from ROI ===
 
+	// User input : maximum iterations for the correction process
+	number max_iterations
+	GetNumber("Maximum iterations", 5, max_iterations)	// returns 0 if user cancel
+
 	// Stack of 1D array of initial phase values as a 2D image
-	image initial_phases := RealImage("Initial phases", 8, 2, m)
+	image initial_phases := RealImage("Initial phases", 8, max_iterations + 1, m)
 
 	// Writing a first guess of the initial phases distribution
 	for (number s = 0; s < m; s++) // For each slice
@@ -161,7 +170,7 @@ image wrap(image img)
 	}
 
 
-// === Phase shifting ===
+// === Iterative Parametric Phase Shifting ===
 
 	// H0, H-, H+ quantities
 	compleximage H0 := ComplexImage("H0", 16, Nx, Ny)
@@ -176,94 +185,127 @@ image wrap(image img)
 	// Output maps
 	image phase := RealImage("Phase", 8, Nx, Ny)
 	image visibility := RealImage("Visibility", 8, Nx, Ny)
-	
-	
-	// Initial phase distribution obtained from previous iteration
-	image initial_phases_current_guess = initial_phases.slice1(0,0,0,1,m,1)
-	
-	// Sum along every slice using the current initial phases distribution guess
-	H0 = project(hologram_stack, 2)																	// Natural sum
-	H1 = project(hologram_stack * exp(complex(0,-1) * initial_phases_current_guess[iplane, 0]), 2)	// Weighted sum
-	H2 = project(hologram_stack * exp(complex(0, 1) * initial_phases_current_guess[iplane, 0]), 2)	// Weighted sum
-
-	// Inverse matrix coefficients
-	complexnumber sigma_p = sum(exp(complex(0,1) * initial_phases_current_guess))
-	complexnumber sigma_n = sum(exp(complex(0,-1) * initial_phases_current_guess))
-	complexnumber sigma_2p = sum(exp(complex(0,2) * initial_phases_current_guess))
-	complexnumber sigma_2n = sum(exp(complex(0,-2) * initial_phases_current_guess))
-
-	complexnumber Delta = m**2 - sigma_p * sigma_n
-	complexnumber Lambda = m**2 - sigma_2p * sigma_2n
-
-	complexnumber R = sigma_2p * sigma_n - m * sigma_p
-	complexnumber Rs = sigma_2n * sigma_p - m * sigma_n
-
-	complexnumber S = sigma_p**2 - m * sigma_2p
-	complexnumber Ss = sigma_n**2 - m * sigma_2n
-
-	// Matrix determinant (ignoring a factor of m)
-	number X = real(Delta**2 - S * Ss)
-
-	// Verbose
-	Result("\n\t> Normalized matrix determinant (0<...<1) : " + X / m**4)	// Should ideally be close to 1
-
-	// Fourier bands matrix calculation
-	A  = (m / X) * (Lambda * H0 + R     * H1 + Rs    * H2)
-	B  = (m / X) * (Rs     * H0 + Delta * H1 + Ss    * H2)
-	Bs = (m / X) * (R      * H0 + S     * H1 + Delta * H2)
-
-	// Final phase calculation (still containing q background)
-	phase = phase(B)
-	visibility = abs(B)
-	
-	// Removing q-gradient background
-	
-		// Asking the user for q-vector coordinates
-		number q_x, q_y
-		GetNumber("Enter the q-vector X-coordinate", (1/20) * (24/25), q_x)		// Default values suited for example data
-		GetNumber("Enter the q-vector Y-coordinate", (1/20) * (7/25), q_y)
-	
 	image flattened_phase := RealImage("Flattened phase", 8, Nx, Ny)
-	flattened_phase = phase.remove_q_background(q_x, q_y).wrap()
 	
-	// Output
+	// Useful quantities
+	complexnumber sigma_p, sigma_2p, sigma_n, sigma_2n
+	complexnumber R, Rs, S, Ss
+	number Delta, Lambda, X
 	
-		// 2D fringe visibility map
-		visibility.ShowImage()
-		
-		// 2D electron wavefront phase map
-		phase.ShowImage()			// Note: a staircase-like profile is expected
-		
-		// 2D object phase map
-		flattened_phase.ShowImage() // Note: if there is a residual gradient, then the q-vector coordinates must be re-evaluated
-	
-	
-// === Residual fringes correction ===
+	// Hologram fringes q-vector coordinates
+	TagGroup q_DLG, q_DLGItems
+	q_DLG = DLGCreateDialog( "Please enter the q-vector coordinates", q_DLGItems)
 
-	// User input: residual fringes measurements
-	number C_N, Phi_N
-	GetNumber("Enter the residual fringes measured amplitude", 0, C_N)
-	GetNumber("Enter the residual fringes measured phase", 0, Phi_N)
-	
-	C_N = C_N * X	// Accounting for the multiplicative factor in the amplitude term
-	
-	// Intermediary quantities
-	compleximage chi_vector := m * (Delta + exp(complex(0,1) * initial_phases_current_guess)* Rs + exp(complex(0,2) * initial_phases_current_guess) * Ss)
-	image mu := abs(chi_vector) * cos(2 * initial_phases_current_guess - chi_vector.phase())
-	image nu := abs(chi_vector) * sin(2 * initial_phases_current_guess - chi_vector.phase())
+	TagGroup q_x_tg, q_y_tg
+	q_DLGitems.DLGAddElement(DLGCreateRealField("q-vector X coordinate :", q_x_tg, (1/20) * (24/25), 24, 16))		// Default values suited for example data
+	q_DLGitems.DLGAddElement(DLGCreateRealField("q-vector Y coordinate :", q_y_tg, (1/20) * (7/25), 24, 16))
 
-	// Dot product function
-	number dot(image a, image b)
+	if (!Alloc(UIframe).Init(q_DLG).Pose())
 	{
-		return sum(a * b)
+		Throw( "User abort." )
 	}
 	
-	// Correction suggestion for the next batch of initial phases
-	image initial_phases_corrections := ((dot(nu, nu) * mu - dot(mu, nu) * nu) * C_N * cos(Phi_N) + (dot(mu, mu) * nu - dot(mu, nu) * mu) * C_N * sin(Phi_N)) / (dot(mu, mu) * dot(nu, nu) - dot(mu, nu)**2)
+	// Intermediary quantities
+	compleximage chi_vector := ComplexImage("Chi vector", 8, m)
+	image mu := RealImage("Mu vector", 8, m)
+	image nu := RealImage("Nu vector", 8, m)	
+		
+	// Iterative process
+	for (number i = 0; i < max_iterations + 1; i++)
+	{
+		// Verbose
+		Result("Iteration : " + i + "\n")
+		
+		// Initial phase distribution obtained from previous iteration
+		image initial_phases_current_guess := initial_phases.slice1(i,0,0,1,m,1)
 	
-	// Writing next batch of initial phases
-	initial_phases.slice1(1,0,0,1,m,1) = initial_phases_current_guess - initial_phases_corrections
+		// Sum along every slice using the current initial phases distribution guess
+		H0 = project(hologram_stack, 2)																	// Natural sum
+		H1 = project(hologram_stack * exp(complex(0,-1) * initial_phases_current_guess[iplane, 0]), 2)	// Weighted sum
+		H2 = project(hologram_stack * exp(complex(0, 1) * initial_phases_current_guess[iplane, 0]), 2)	// Weighted sum
+
+		// Matrix coefficients
+		sigma_p = sum(exp(complex(0,1) * initial_phases_current_guess))
+		sigma_n = sum(exp(complex(0,-1) * initial_phases_current_guess))
+		sigma_2p = sum(exp(complex(0,2) * initial_phases_current_guess))
+		sigma_2n = sum(exp(complex(0,-2) * initial_phases_current_guess))
+
+		// Inverse matrix coefficients
+		Delta = real(m**2 - sigma_p * sigma_n)
+		Lambda = real(m**2 - sigma_2p * sigma_2n)
+
+		R = sigma_2p * sigma_n - m * sigma_p
+		Rs = sigma_2n * sigma_p - m * sigma_n
+
+		S = sigma_p**2 - m * sigma_2p
+		Ss = sigma_n**2 - m * sigma_2n
+
+		// Matrix determinant (ignoring a factor of m)
+		X = real(Delta**2 - S * Ss)
+
+		// Verbose
+		Result("\t> Normalized matrix determinant (0<...<1) : " + X / m**4 + "\n")	// Should ideally be close to 1
+
+		// Fourier bands matrix calculation
+		A  = (m / X) * (Lambda * H0 + R     * H1 + Rs    * H2)
+		B  = (m / X) * (Rs     * H0 + Delta * H1 + Ss    * H2)
+		Bs = (m / X) * (R      * H0 + S     * H1 + Delta * H2)
+
+		// Final phase calculation (still containing q background)
+		phase = phase(B)
+		visibility = abs(B)		
 	
+		// Removing q-gradient background
+		flattened_phase = phase.remove_q_background(q_x_tg.DLGGetValue(), q_y_tg.DLGGetValue()).wrap()
+	
+		// Output
+			// 2D fringe visibility map
+			visibility.ShowImage()
+			
+			// 2D electron wavefront phase map
+			phase.ShowImage()			// Note: a staircase-like profile is expected
+			
+			// 2D object phase map
+			flattened_phase.ShowImage() // Note: if there is a residual gradient, then the q-vector coordinates must be re-evaluated
+		
+		// Avoid doing the last correction (will not be used anyway), otherwise continue
+		if (i == max_iterations)
+		{
+			break
+		}
+	
+		// === Residual fringes correction ===
+
+		// User input: residual fringes measured amplitude and phase
+		TagGroup residual_DLG, residual_DLGItems
+		residual_DLG = DLGCreateDialog( "Please enter the residual fringes characteristics", residual_DLGItems)
+
+		TagGroup C_N_tg, Phi_N_tg
+		residual_DLGitems.DLGAddElement(DLGCreateRealField("Measured amplitude :", C_N_tg, 0.1, 24, 16))
+		residual_DLGitems.DLGAddElement(DLGCreateRealField("Measured phase :", Phi_N_tg, 0., 24, 16))
+
+		if (!Alloc(UIframe).Init(residual_DLG).Pose())
+		{
+			okdialog("Process has stopped after " + i + " iteration(s).")
+			break
+		}
+		
+		number C_N = C_N_tg.DLGGetValue() * X	// Accounting for the multiplicative factor in the amplitude term
+		number Phi_N = Phi_N_tg.DLGGetValue()
+		
+		// Intermediary quantities
+		chi_vector = m * (Delta + exp(complex(0,1) * initial_phases_current_guess)* Rs + exp(complex(0,2) * initial_phases_current_guess) * Ss)
+		mu = abs(chi_vector) * cos(2 * initial_phases_current_guess - chi_vector.phase())
+		nu = abs(chi_vector) * sin(2 * initial_phases_current_guess - chi_vector.phase())
+
+		// Correction suggestion for the next batch of initial phases
+		image initial_phases_corrections := ((dot(nu, nu) * mu - dot(mu, nu) * nu) * C_N * cos(Phi_N) + (dot(mu, mu) * nu - dot(mu, nu) * mu) * C_N * sin(Phi_N)) / (dot(mu, mu) * dot(nu, nu) - dot(mu, nu)**2)
+		
+		// Writing next batch of initial phases
+		initial_phases.slice1(i+1,0,0,1,m,1) = initial_phases_current_guess - initial_phases_corrections
+	}
+
 	// Output
-	initial_phases.ShowImage()	// Note: first column = rough guesses, second column = suggested new values
-	
+	// Note : initial_phases[col=0, row] = rough starter guess for the initial phase of slice <row> of the hologram stack
+	// Note : initial_phases[col>0, row] = corrected guess for the initial phase of slice <row> used at iteration <col>
+	initial_phases.ShowImage()
