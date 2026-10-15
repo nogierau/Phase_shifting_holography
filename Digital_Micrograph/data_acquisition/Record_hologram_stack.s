@@ -1,10 +1,12 @@
 /*
 === Description ===
+
 This script uses the Electron Microscope Beam Tilt to acquire a linearly phase-shifted hologram stack automatically,
 which can be further processed using the Iterative Parametric Phase Shift (IPPS) method
 to yield a phase map with reduced residual fringes compared to that of the standard Phase Shift (PS).
 
 === Requirements ===
+
 > According to the acquisition and processing framework of IPPS,
   the target values of initial phases are irrelevant as they are not under any hypothesis,
   so that no Beam Tilt calibration is needed.
