@@ -5,7 +5,7 @@ Additional details on calculations and mathematical results can be found [here](
 
 ## Current state of the repository
 
-> This repository is in a build-up phase as of **september 30, 2026**
+> This repository is in a build-up phase as of **october 15, 2026**
 
 ### Python scripts
 
@@ -24,7 +24,8 @@ The current capabilities of the provided Python scripts include:
 The current capabilities of DigitalMicrograph scripts include:
 
 * Piloting an electron microscope to record a phase-shifted hologram stack using beam tilt
-* Performing a manual implementation of the Iterative Parametric Phase-Shifting routine on an arbitrary hologram stack using a user-selected region of interest
+* Performing a semi-automatic implementation of the Iterative Parametric Phase-Shifting routine on an arbitrary hologram stack through a dialog window
+* Example data
 
 ## TODO
 
@@ -46,5 +47,4 @@ The remaining tasks to implement in Python scripts include, in no particular ord
 
 The remaining tasks to implement in DigitalMicrograph scripts include, in no particular order:
 
-* Implementing an automated version of the Iterative Parametric Phase Shift routine
 * Implementing a user-friendly way to evaluate residual fringe characteristics in an experimental setup
